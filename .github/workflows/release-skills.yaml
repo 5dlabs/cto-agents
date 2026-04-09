@@ -5,8 +5,8 @@ on:
     branches: [main]
     paths:
       - '**/*.md'
-      - '**/SKILL.md'
-      - 'skill-mappings.yaml'
+      - '**/*.yaml'
+      - '**/*.json'
 
 permissions:
   contents: write
@@ -18,51 +18,87 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build per-skill tarballs and hashes
+      - name: Build per-agent tarballs
         run: |
-          mkdir -p dist staging
+          mkdir -p dist
 
-          # Walk {agent}/{project}/{skill}/ directories
-          # Structure: {agent}/{project}/{skill}/SKILL.md (+ optional extra files)
+          # Each top-level directory (except dotfiles and _shared) is an agent.
+          # For each agent, merge _default/ + any project dirs into one tarball.
+          #
+          # Structure: {agent}/_default/{skill}/{files}
+          #            {agent}/{project}/{skill}/{files}  (project overrides _default)
+          #
+          # Output:    dist/{agent}.tar.gz  containing {agent}/{skill}/{files}
+
           for agent_dir in */; do
             agent=$(basename "$agent_dir")
 
-            # Skip dotfiles and non-agent dirs
+            # Skip dotfiles, _shared, and non-directories
             [[ "$agent" == .* ]] && continue
+            [[ "$agent" == _shared ]] && continue
             [ ! -d "$agent_dir" ] && continue
 
+            # Create staging area for this agent
+            staging=$(mktemp -d)
+            mkdir -p "$staging/$agent"
+
+            # 1. Copy _default skills first (base layer)
+            if [ -d "$agent_dir/_default" ]; then
+              for skill_dir in "$agent_dir/_default"/*/; do
+                [ ! -d "$skill_dir" ] && continue
+                skill=$(basename "$skill_dir")
+                cp -r "$skill_dir" "$staging/$agent/$skill"
+              done
+            fi
+
+            # 2. Overlay any project-specific skills (overrides _default)
             for project_dir in "$agent_dir"*/; do
               project=$(basename "$project_dir")
               [ ! -d "$project_dir" ] && continue
+              [ "$project" = "_default" ] && continue
 
               for skill_dir in "$project_dir"*/; do
-                skill_name=$(basename "$skill_dir")
                 [ ! -d "$skill_dir" ] && continue
-
-                # Must have SKILL.md
-                if [ ! -f "$skill_dir/SKILL.md" ]; then
-                  echo "WARN: $skill_dir has no SKILL.md, skipping"
-                  continue
-                fi
-
-                # Stage skill files under {skill_name}/ for tarball
-                # If this skill was already staged (from another agent), skip
-                # (first agent wins — skills are identical across agents)
-                if [ ! -d "staging/$skill_name" ]; then
-                  cp -r "$skill_dir" "staging/$skill_name"
-                  echo "Staged: $agent/$project/$skill_name ($(ls "staging/$skill_name" | wc -l | tr -d ' ') files)"
-                fi
+                skill=$(basename "$skill_dir")
+                # Project skills override _default (rm + copy)
+                rm -rf "$staging/$agent/$skill"
+                cp -r "$skill_dir" "$staging/$agent/$skill"
               done
             done
+
+            # Count skills
+            skill_count=$(ls -d "$staging/$agent"/*/ 2>/dev/null | wc -l | tr -d ' ')
+
+            if [ "$skill_count" -eq 0 ]; then
+              echo "WARN: $agent has no skills, skipping"
+              rm -rf "$staging"
+              continue
+            fi
+
+            # Build tarball: {agent}/{skill}/SKILL.md ...
+            tar czf "dist/${agent}.tar.gz" -C "$staging" "$agent"
+            echo "Packaged: ${agent}.tar.gz ($skill_count skills)"
+            rm -rf "$staging"
           done
 
-          # Build tarballs from staging
-          cd staging
-          for skill_dir in */; do
-            skill_name=$(basename "$skill_dir")
-            tar czf "../dist/${skill_name}.tar.gz" "$skill_name"
-          done
-          cd ..
+          # Also package _shared if it exists
+          if [ -d "_shared" ]; then
+            staging=$(mktemp -d)
+            mkdir -p "$staging/_shared"
+            if [ -d "_shared/_default" ]; then
+              for skill_dir in "_shared/_default"/*/; do
+                [ ! -d "$skill_dir" ] && continue
+                skill=$(basename "$skill_dir")
+                cp -r "$skill_dir" "$staging/_shared/$skill"
+              done
+            fi
+            skill_count=$(ls -d "$staging/_shared"/*/ 2>/dev/null | wc -l | tr -d ' ')
+            if [ "$skill_count" -gt 0 ]; then
+              tar czf "dist/_shared.tar.gz" -C "$staging" "_shared"
+              echo "Packaged: _shared.tar.gz ($skill_count skills)"
+            fi
+            rm -rf "$staging"
+          fi
 
           # Generate hashes.txt manifest
           cd dist
@@ -71,7 +107,7 @@ jobs:
           echo "=== hashes.txt ==="
           cat hashes.txt
           echo ""
-          echo "Total skills packaged: $(wc -l < hashes.txt)"
+          echo "Total agent tarballs: $(grep -c '.tar.gz' hashes.txt)"
 
       - name: Delete existing latest release
         env:
@@ -88,8 +124,8 @@ jobs:
             --title "Latest Skills Release" \
             --notes "Auto-published on $(date -u +%Y-%m-%dT%H:%M:%SZ) from commit $(git rev-parse --short HEAD).
 
-          Contains $(ls dist/*.tar.gz | wc -l) per-skill tarballs + \`hashes.txt\` manifest.
+          Contains per-agent tarballs — one \`.tar.gz\` per agent with all their skills merged (\`_default\` + project overrides).
 
-          The CTO controller fetches \`hashes.txt\` and downloads only changed skills." \
+          The CTO controller fetches \`hashes.txt\`, downloads the agent's tarball, and caches it locally." \
             --latest \
             dist/*
