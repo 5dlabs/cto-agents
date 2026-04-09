@@ -2,28 +2,42 @@
 
 Modular skill definitions for [CTO platform](https://github.com/5dlabs/cto) agents.
 
-Skills are `SKILL.md` files that provide domain-specific knowledge, patterns, and instructions to AI coding agents at runtime. Each skill is packaged as an individual `.tar.gz` tarball and published to a rolling `latest` GitHub Release, enabling the CTO controller to download only the skills an agent needs.
+Skills are directories containing `SKILL.md` (and optionally extra files like configs or templates) that provide domain-specific knowledge, patterns, and instructions to AI coding agents at runtime. Each skill is packaged as an individual `.tar.gz` tarball and published to a rolling `latest` GitHub Release.
 
 ## Structure
 
 ```
-skills/
-  {skill-name}/
-    SKILL.md              # Skill content (markdown)
+{agent}/
+  {project}/
+    {skill}/
+      SKILL.md              # Skill content (required)
+      config.yaml            # Optional extra files
+      ...
 
-skill-mappings.yaml       # Agent -> skill assignments by job type
-llm-docs-registry.yaml    # LLM documentation skill registry
+skill-mappings.yaml          # Agent -> skill assignments by job type
 ```
 
-## Agent Skill Mappings
+### Example
 
-Skills are assigned to agents via `skill-mappings.yaml` with job-type specificity:
+```
+rex/
+  _default/
+    rust-patterns/
+      SKILL.md
+    rust-error-handling/
+      SKILL.md
+  my-project/
+    custom-skill/
+      SKILL.md
+      schema.json
 
-- **default** — always loaded for the agent
-- **coder** / **healer** / **intake** / **quality** / **test** / **security** / **review** / **deploy** / **integration** — merged with defaults based on the CodeRun's `runType`
-- **optional** — loaded based on triggers or explicit request
-
-See `skill-mappings.yaml` for the full mapping.
+blaze/
+  _default/
+    shadcn-stack/
+      SKILL.md
+    anime-js/
+      SKILL.md
+```
 
 ## How It Works
 
@@ -31,37 +45,27 @@ See `skill-mappings.yaml` for the full mapping.
 2. On reconcile, it fetches `hashes.txt` from this repo's `latest` release
 3. For each skill the agent needs, it compares the remote hash to its local cache
 4. Changed or missing skills are downloaded as `{skill}.tar.gz` and extracted
-5. Skill content is inlined into the agent's container ConfigMap
+5. Skill content (all files in the skill directory) is available to the agent
 
 ## Release Automation
 
 Every push to `main` triggers the `release-skills` GitHub Action which:
 
-1. Walks `skills/*/SKILL.md`
-2. Creates a per-skill `.tar.gz` (containing `{skill_name}/SKILL.md`)
-3. Computes `sha256` hashes
-4. Publishes all tarballs + `hashes.txt` to a rolling `latest` release
+1. Walks all `{agent}/{project}/{skill}/` directories
+2. Creates per-skill `.tar.gz` tarballs (containing all files in the skill dir)
+3. Deduplicates skills that appear under multiple agents
+4. Computes `sha256` hashes
+5. Publishes all tarballs + `hashes.txt` to a rolling `latest` release
 
-## Adding a New Skill
+## Adding a Skill
 
-1. Create `skills/{skill-name}/SKILL.md`
+1. Create `{agent}/{project}/{skill}/SKILL.md` (and any extra files)
 2. Add the skill to `skill-mappings.yaml` under the relevant agent(s)
 3. Push to `main` — the release action handles the rest
 
-## Skill Categories
+## Adding a Project-Specific Skill
 
-| Category | Count | Examples |
-|----------|-------|---------|
-| Context | 8 | context-fundamentals, memory-systems, tool-design |
-| Languages | 6 | rust-patterns, go-patterns, effect-patterns |
-| Platforms | 22 | kubernetes-operators, expo-patterns, cloudflare-workers |
-| LLM Docs | 15 | drizzle-queries, expo, hono, prisma, stripe |
-| Quality | 14 | code-review, testing-strategies, playwright-testing |
-| Security | 12 | semgrep, codeql, cargo-fuzz, variant-analysis |
-| Tools | 16 | github-mcp, kubernetes-mcp, firecrawl, openmemory |
-| Workflow | 19 | intake-pipeline, parallel-agents, deep-research |
-| Design | 3 | frontend-design, react-best-practices |
-| Stacks | 2 | shadcn-stack, tanstack-stack |
-| Auth | 3 | better-auth, better-auth-expo, better-auth-electron |
-| Documents | 4 | pdf, docx, xlsx, pptx |
-| Animations | 1 | anime-js |
+1. Create `{agent}/{project-name}/{skill}/SKILL.md`
+2. Push to `main`
+
+Project-specific skills override `_default` skills of the same name.
