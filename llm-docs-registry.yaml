@@ -1,0 +1,262 @@
+# LLM Documentation Registry
+# Maps libraries to their llms.txt endpoints for enriched agent context
+#
+# The llms.txt standard (https://llmstxt.org/) provides LLM-optimized documentation
+# that agents can fetch for up-to-date API references and architecture overviews.
+#
+# Usage:
+# 1. Skills reference entries here via the `llm_docs` frontmatter field
+# 2. Agents can fetch llms.txt content using Firecrawl when needed
+# 3. Build-time caching can pre-fetch content for offline availability
+
+# ============================================================================
+# FRONTEND LIBRARIES
+# ============================================================================
+
+shadcn:
+  name: shadcn/ui
+  description: Beautifully designed, accessible components built with Radix UI and Tailwind CSS
+  llms_txt: https://ui.shadcn.com/llms.txt
+  context7_id: /shadcn-ui/ui
+  skills:
+    - shadcn-stack
+
+tanstack:
+  name: TanStack
+  description: High-quality, open-source libraries for routing, data fetching, state management, tables, and forms
+  llms_txt: https://tanstack.com/llms.txt
+  context7_id: /tanstack/query
+  skills:
+    - shadcn-stack
+    - tanstack-stack
+
+# ============================================================================
+# TYPESCRIPT/EFFECT ECOSYSTEM
+# ============================================================================
+
+effect:
+  name: Effect TypeScript
+  description: Powerful TypeScript library for building complex synchronous and asynchronous programs
+  llms_txt: https://effect.website/llms.txt
+  llms_full_txt: https://effect.website/llms-full.txt
+  context7_id: /effect-ts/effect
+  skills:
+    - effect-patterns
+    - effect-frontend-patterns
+
+elysia:
+  name: Elysia
+  description: Ergonomic TypeScript framework supercharged by Bun with end-to-end type safety
+  llms_txt: https://elysiajs.com/llms.txt
+  context7_id: /elysiajs/elysia
+  skills:
+    - elysia-llm-docs
+    - effect-patterns
+
+hono:
+  name: Hono
+  description: Ultrafast web framework built on Web Standards for any JavaScript runtime
+  llms_txt: https://hono.dev/llms.txt
+  llms_full_txt: https://hono.dev/llms-full.txt
+  llms_small_txt: https://hono.dev/llms-small.txt
+  context7_id: /honojs/hono
+  skills:
+    - hono-llm-docs
+
+zod:
+  name: Zod
+  description: TypeScript-first schema validation with static type inference
+  llms_txt: https://zod.dev/llms.txt
+  context7_id: /colinhacks/zod
+  skills:
+    - zod-llm-docs
+    - effect-patterns
+
+trpc:
+  name: tRPC
+  description: End-to-end typesafe APIs without schemas or code generation
+  llms_txt: https://trpc.io/llms.txt
+  context7_id: /trpc/trpc
+  skills:
+    - trpc-llm-docs
+
+# ============================================================================
+# DATABASE / ORM
+# ============================================================================
+
+drizzle:
+  name: Drizzle ORM
+  description: Modern TypeScript ORM - lightweight, tree-shakeable, serverless-ready
+  llms_txt: https://orm.drizzle.team/llms.txt
+  llms_full_txt: https://orm.drizzle.team/llms-full.txt
+  context7_id: /drizzle-team/drizzle-orm
+  skills:
+    - effect-patterns  # Drizzle often used with Effect
+
+prisma:
+  name: Prisma
+  description: Next-generation TypeScript ORM with type-safe database access
+  llms_txt: https://www.prisma.io/llms.txt
+  context7_id: /prisma/prisma
+  skills:
+    - prisma-llm-docs
+
+supabase:
+  name: Supabase
+  description: Open-source Firebase alternative with PostgreSQL, auth, storage, and realtime
+  llms_txt: https://supabase.com/llms.txt
+  context7_id: /supabase/supabase
+  skills:
+    - supabase-llm-docs
+
+# ============================================================================
+# AUTHENTICATION
+# ============================================================================
+
+better-auth:
+  name: Better Auth
+  description: The most comprehensive authentication framework for TypeScript
+  llms_txt: https://www.better-auth.com/llms.txt
+  context7_id: /better-auth/better-auth
+  skills:
+    - better-auth
+    - better-auth-expo
+    - better-auth-electron
+
+clerk:
+  name: Clerk
+  description: Complete user management platform with authentication and organizations
+  llms_txt: https://clerk.com/llms.txt
+  context7_id: /clerk/javascript
+  skills:
+    - clerk-llm-docs
+
+# ============================================================================
+# RUNTIMES & FRAMEWORKS
+# ============================================================================
+
+bun:
+  name: Bun
+  description: All-in-one JavaScript runtime with bundler, package manager, and test runner
+  llms_txt: https://bun.sh/llms.txt
+  context7_id: /oven-sh/bun
+  skills:
+    - bun-llm-docs
+    - elysia-llm-docs
+
+# ============================================================================
+# MOBILE / REACT NATIVE
+# ============================================================================
+
+expo:
+  name: Expo
+  description: Open-source platform for universal native apps with React Native
+  llms_txt: https://docs.expo.dev/llms.txt
+  context7_id: /expo/expo
+  skills:
+    - expo-llm-docs
+    - expo-patterns
+
+react-native:
+  name: React Native
+  description: Framework for building native apps for Android and iOS using React
+  llms_txt: https://reactnative.dev/llms.txt
+  context7_id: /facebook/react-native
+  skills:
+    - react-native-llm-docs
+
+# ============================================================================
+# DEPLOYMENT & INFRASTRUCTURE
+# ============================================================================
+
+vercel:
+  name: Vercel
+  description: Frontend cloud platform for deploying and scaling web applications
+  llms_txt: https://vercel.com/llms.txt
+  context7_id: /vercel/vercel
+  skills:
+    - vercel-llm-docs
+
+turborepo:
+  name: Turborepo
+  description: High-performance build system for JavaScript and TypeScript monorepos
+  llms_txt: https://turbo.build/llms.txt
+  context7_id: /vercel/turborepo
+  skills:
+    - turborepo-llm-docs
+
+# ============================================================================
+# PAYMENTS
+# ============================================================================
+
+stripe:
+  name: Stripe
+  description: Payment infrastructure for the internet
+  llms_txt: https://stripe.com/llms.txt
+  context7_id: /stripe/stripe-node
+  skills:
+    - stripe-llm-docs
+
+# ============================================================================
+# TESTING
+# ============================================================================
+
+vitest:
+  name: Vitest
+  description: Vite-native testing framework with instant test runs
+  llms_txt: https://vitest.dev/llms.txt
+  context7_id: /vitest-dev/vitest
+  skills:
+    - vitest-llm-docs
+
+# ============================================================================
+# LIBRARIES WITHOUT llms.txt (tracked for future availability)
+# ============================================================================
+
+# next:
+#   name: Next.js
+#   description: The React Framework for the Web
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /vercel/next.js
+#   skills:
+#     - shadcn-stack
+
+# tailwind:
+#   name: Tailwind CSS
+#   description: Utility-first CSS framework
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /tailwindlabs/tailwindcss
+#   skills:
+#     - shadcn-stack
+
+# react-hook-form:
+#   name: React Hook Form
+#   description: Performant, flexible forms with easy-to-use validation
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /react-hook-form/react-hook-form
+#   skills:
+#     - shadcn-stack
+
+# radix:
+#   name: Radix UI
+#   description: Unstyled, accessible UI components for React
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /radix-ui/primitives
+#   skills:
+#     - shadcn-stack
+
+# playwright:
+#   name: Playwright
+#   description: Browser automation library for end-to-end testing
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /microsoft/playwright
+#   skills:
+#     - tess
+
+# electron:
+#   name: Electron
+#   description: Build cross-platform desktop apps with web technologies
+#   llms_txt: null  # Not available as of 2026-01
+#   context7_id: /electron/electron
+#   skills:
+#     - spark

@@ -1,0 +1,66 @@
+name: Release Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build per-skill tarballs and hashes
+        run: |
+          mkdir -p dist
+
+          # Walk all skills and create per-skill tarballs
+          for skill_dir in skills/*/; do
+            skill_name=$(basename "$skill_dir")
+
+            # Skip if no SKILL.md
+            if [ ! -f "$skill_dir/SKILL.md" ]; then
+              echo "WARN: $skill_dir has no SKILL.md, skipping"
+              continue
+            fi
+
+            # Create tarball containing {skill_name}/SKILL.md
+            tar czf "dist/${skill_name}.tar.gz" -C skills "$skill_name"
+            echo "Packaged: ${skill_name}.tar.gz"
+          done
+
+          # Generate hashes.txt manifest
+          cd dist
+          sha256sum *.tar.gz > hashes.txt
+          echo ""
+          echo "=== hashes.txt ==="
+          cat hashes.txt
+          echo ""
+          echo "Total skills packaged: $(wc -l < hashes.txt)"
+
+      - name: Delete existing latest release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete latest --yes 2>/dev/null || true
+          git push origin :refs/tags/latest 2>/dev/null || true
+
+      - name: Create rolling latest release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create latest \
+            --title "Latest Skills Release" \
+            --notes "Auto-published on $(date -u +%Y-%m-%dT%H:%M:%SZ) from commit $(git rev-parse --short HEAD).
+
+          Contains $(ls dist/*.tar.gz | wc -l) per-skill tarballs + \`hashes.txt\` manifest.
+
+          The CTO controller fetches \`hashes.txt\` and downloads only changed skills." \
+            --latest \
+            dist/*
