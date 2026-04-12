@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "data": {
+    "optimist": "# Research Memo: What's Proven and Working\n",
+    "pessimist": "# Research Memo: Known Failure Modes and Risks\n"
+  },
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "total_tokens": 0
+  },
+  "model": "multi-source",
+  "provider": "exa+perplexity+hermes+tavily+firecrawl"
+}
