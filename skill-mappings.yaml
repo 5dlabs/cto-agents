@@ -277,6 +277,7 @@ block:
     - evm-development
     - cross-chain
     - blockchain-trading
+    - solana-node-operations
     # Rust (Solana programs are Rust)
     - rust-patterns
     - rust-error-handling
