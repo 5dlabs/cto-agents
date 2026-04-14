@@ -257,6 +257,53 @@ grizz:
       triggers: [review, code review, pr, pull request]
       description: "Go code review best practices and checklist"
 
+block:
+  description: "Blockchain specialist for Solana, EVM, and cross-chain development"
+  default:
+    # Context engineering (all agents)
+    - context-fundamentals
+    - context-degradation
+    - context-optimization
+    # Tool skills
+    - openmemory
+    - context7
+    - octocode
+    - llm-docs
+    - github-mcp
+    # Blockchain specific
+    - solana-development
+    - anchor-framework
+    - solana-defi
+    - evm-development
+    - cross-chain
+    - blockchain-trading
+    # Rust (Solana programs are Rust)
+    - rust-patterns
+    - rust-error-handling
+  coder:
+    - tool-design
+    - firecrawl
+    - compound-engineering
+    - verification-before-completion
+    - systematic-debugging
+    - subagent-driven-development
+    - requesting-code-review
+    - receiving-code-review
+  healer:
+    - incident-response
+    - observability
+    - kubernetes-mcp
+  optional:
+    deep-research:
+      triggers: [research, competitive, like, similar to, compare, best practices]
+      description: "Deep technical research for blockchain patterns and protocol analysis"
+    memory-systems:
+      triggers: [memory, persistence, cache]
+      description: "Agent memory architecture patterns"
+    ralph-technique:
+      triggers: [minimal, ralph, loop, autonomous, simple]
+      description: "Minimal prompting technique for loop-based autonomous execution"
+
 nova:
   description: "Node.js/Bun with Elysia, Effect, Drizzle"
   default:
