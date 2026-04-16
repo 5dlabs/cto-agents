@@ -1,0 +1,27 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "CTO Agent Skills & Tool Catalog",
+  "description": "Complete catalog of MCP tools, agent skills, and library references for CTO platform agents. Query this to discover available capabilities, tools, and documentation.",
+  "folders": [
+    "catalog",
+    "rex/_default",
+    "_shared"
+  ],
+  "excludeFolders": [
+    ".github",
+    ".tasks"
+  ],
+  "excludeFiles": [
+    "CHANGELOG.md",
+    "LICENSE.md"
+  ],
+  "rules": [
+    "Skills are SKILL.md files containing agent instructions and domain knowledge",
+    "Tools are MCP servers documented in catalog/tools/ with capabilities, schemas, and config",
+    "Use skill-mappings.yaml for agent-to-skill assignments by job type",
+    "Use llm-docs-registry.yaml for library documentation sources and Context7 IDs",
+    "catalog/catalog.json provides a machine-readable index of all tools and their capabilities",
+    "When searching for a capability, check both catalog/tools/ and rex/_default/ skills",
+    "Prefer generating custom skills from Context7 library docs over installing third-party skills"
+  ]
+}

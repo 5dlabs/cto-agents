@@ -1,0 +1,480 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-04-16T14:27:26Z",
+  "tools": {
+    "linear": {
+      "name": "Linear",
+      "prefix": "linear_*",
+      "tool_count": 187,
+      "description": "Issue tracking, projects, cycles, teams, and workflow management",
+      "capabilities": [
+        "issue-tracking",
+        "project-management",
+        "cycles",
+        "teams",
+        "workflows"
+      ],
+      "doc_path": "catalog/tools/linear.md"
+    },
+    "grafana": {
+      "name": "Grafana",
+      "prefix": "grafana_*",
+      "tool_count": 56,
+      "description": "Dashboards, alerts, and Loki/Prometheus metric queries",
+      "capabilities": [
+        "dashboards",
+        "alerts",
+        "metrics",
+        "loki",
+        "prometheus"
+      ],
+      "doc_path": "catalog/tools/grafana.md"
+    },
+    "github": {
+      "name": "GitHub",
+      "prefix": "github_*",
+      "tool_count": 26,
+      "description": "Pull requests, issues, code management, and branch operations",
+      "capabilities": [
+        "pull-requests",
+        "issues",
+        "code-management",
+        "branches"
+      ],
+      "doc_path": "catalog/tools/github.md"
+    },
+    "playwright": {
+      "name": "Playwright",
+      "prefix": "playwright_*",
+      "tool_count": 22,
+      "description": "Browser automation, testing, and web interaction",
+      "capabilities": [
+        "browser-automation",
+        "testing",
+        "web-interaction",
+        "screenshots"
+      ],
+      "doc_path": "catalog/tools/playwright.md"
+    },
+    "argocd": {
+      "name": "Argo CD",
+      "prefix": "argocd_*",
+      "tool_count": 14,
+      "description": "GitOps continuous delivery, sync, rollback, and resource management",
+      "capabilities": [
+        "gitops",
+        "deployment",
+        "sync",
+        "rollback",
+        "kubernetes"
+      ],
+      "doc_path": "catalog/tools/argocd.md"
+    },
+    "octocode": {
+      "name": "OctoCode",
+      "prefix": "octocode_*",
+      "tool_count": 6,
+      "description": "Semantic GitHub code search, repository structure, and PR archaeology",
+      "capabilities": [
+        "code-search",
+        "repository-analysis",
+        "pr-review",
+        "semantic-search"
+      ],
+      "doc_path": "catalog/tools/octocode.md"
+    },
+    "openmemory": {
+      "name": "OpenMemory",
+      "prefix": "openmemory_*",
+      "tool_count": 6,
+      "description": "Persistent cross-session agent memory for storing and querying learnings",
+      "capabilities": [
+        "memory",
+        "persistence",
+        "cross-session",
+        "knowledge-management"
+      ],
+      "doc_path": "catalog/tools/openmemory.md"
+    },
+    "loki": {
+      "name": "Loki",
+      "prefix": "loki_*",
+      "tool_count": 7,
+      "description": "Log search, pattern detection, and log correlations",
+      "capabilities": [
+        "log-search",
+        "patterns",
+        "correlations",
+        "observability"
+      ],
+      "doc_path": "catalog/tools/loki.md"
+    },
+    "tavily": {
+      "name": "Tavily",
+      "prefix": "tavily_*",
+      "tool_count": 5,
+      "description": "Web search, crawling, content extraction, and research",
+      "capabilities": [
+        "web-search",
+        "crawling",
+        "extraction",
+        "research"
+      ],
+      "doc_path": "catalog/tools/tavily.md"
+    },
+    "perplexity": {
+      "name": "Perplexity",
+      "prefix": "modelcontextprotocol_*",
+      "tool_count": 4,
+      "description": "AI-powered search, reasoning, and deep research",
+      "capabilities": [
+        "ai-search",
+        "reasoning",
+        "deep-research"
+      ],
+      "doc_path": "catalog/tools/perplexity.md"
+    },
+    "exa": {
+      "name": "Exa",
+      "prefix": "exa_*",
+      "tool_count": 2,
+      "description": "Neural web search and code context retrieval",
+      "capabilities": [
+        "web-search",
+        "code-context",
+        "neural-search"
+      ],
+      "doc_path": "catalog/tools/exa.md"
+    },
+    "terraform": {
+      "name": "Terraform",
+      "prefix": "terraform_*",
+      "tool_count": 9,
+      "description": "Provider and module lookup for infrastructure as code",
+      "capabilities": [
+        "infrastructure",
+        "providers",
+        "modules",
+        "iac"
+      ],
+      "doc_path": "catalog/tools/terraform.md"
+    },
+    "solana": {
+      "name": "Solana",
+      "prefix": "solana_*",
+      "tool_count": 3,
+      "description": "Anchor framework, Solana documentation, and blockchain expert",
+      "capabilities": [
+        "blockchain",
+        "anchor",
+        "solana",
+        "web3"
+      ],
+      "doc_path": "catalog/tools/solana.md"
+    },
+    "context7": {
+      "name": "Context7",
+      "prefix": "context7_*",
+      "tool_count": 2,
+      "description": "Up-to-date library documentation and code examples",
+      "capabilities": [
+        "documentation",
+        "library-docs",
+        "code-examples"
+      ],
+      "doc_path": "catalog/tools/context7.md"
+    },
+    "graphql": {
+      "name": "GraphQL",
+      "prefix": "graphql_*",
+      "tool_count": 2,
+      "description": "Schema introspection and query execution",
+      "capabilities": [
+        "schema-introspection",
+        "queries",
+        "api"
+      ],
+      "doc_path": "catalog/tools/graphql.md"
+    },
+    "better_auth": {
+      "name": "Better Auth",
+      "prefix": "better_auth_*",
+      "tool_count": 4,
+      "description": "Authentication documentation search and reference",
+      "capabilities": [
+        "authentication",
+        "docs-search",
+        "auth-patterns"
+      ],
+      "doc_path": "catalog/tools/better_auth.md"
+    },
+    "pg_aiguide": {
+      "name": "PG AI Guide",
+      "prefix": "pg_aiguide_*",
+      "tool_count": 2,
+      "description": "PostgreSQL and TimescaleDB documentation and guidance",
+      "capabilities": [
+        "postgresql",
+        "timescaledb",
+        "database",
+        "docs"
+      ],
+      "doc_path": "catalog/tools/pg_aiguide.md"
+    },
+    "ai_elements": {
+      "name": "AI Elements",
+      "prefix": "ai_elements_*",
+      "tool_count": 2,
+      "description": "AI-powered UI component generation and reference",
+      "capabilities": [
+        "ui-components",
+        "ai-generation",
+        "frontend"
+      ],
+      "doc_path": "catalog/tools/ai_elements.md"
+    }
+  },
+  "skills": {
+    "compound-engineering": {
+      "name": "compound-engineering",
+      "description": "Compound Engineering methodology - Plan\u2192Work\u2192Review\u2192Compound loop where each unit of work makes subsequent work easier. Use when implementing features, fixing bugs, or any development work.",
+      "path": "rex/_default/compound-engineering/SKILL.md",
+      "capabilities": [
+        "methodology",
+        "planning",
+        "review",
+        "learning-loop"
+      ]
+    },
+    "context-degradation": {
+      "name": "context-degradation",
+      "description": "Recognize and mitigate context failures including lost-in-middle, context poisoning, distraction, confusion, and clash.",
+      "path": "rex/_default/context-degradation/SKILL.md",
+      "capabilities": [
+        "context-engineering",
+        "debugging",
+        "performance",
+        "attention-patterns"
+      ]
+    },
+    "context-fundamentals": {
+      "name": "context-fundamentals",
+      "description": "Foundational understanding of context engineering for AI agent systems - context windows, attention mechanics, progressive disclosure, and context budgeting",
+      "path": "rex/_default/context-fundamentals/SKILL.md",
+      "capabilities": [
+        "context-engineering",
+        "architecture",
+        "token-management",
+        "agent-design"
+      ]
+    },
+    "context-optimization": {
+      "name": "context-optimization",
+      "description": "Extend effective context capacity through compression, masking, caching, and partitioning techniques.",
+      "path": "rex/_default/context-optimization/SKILL.md",
+      "capabilities": [
+        "context-engineering",
+        "compression",
+        "caching",
+        "token-optimization"
+      ]
+    },
+    "context7": {
+      "name": "context7",
+      "description": "Query up-to-date library documentation and code examples before implementing features.",
+      "path": "rex/_default/context7/SKILL.md",
+      "capabilities": [
+        "documentation",
+        "library-docs",
+        "code-examples",
+        "api-reference"
+      ]
+    },
+    "firecrawl": {
+      "name": "firecrawl",
+      "description": "Web scraping, content extraction, and autonomous research agent for deep web investigation.",
+      "path": "rex/_default/firecrawl/SKILL.md",
+      "capabilities": [
+        "web-scraping",
+        "research",
+        "content-extraction",
+        "crawling"
+      ]
+    },
+    "github-mcp": {
+      "name": "github-mcp",
+      "description": "GitHub operations for creating PRs, pushing files, and managing branches.",
+      "path": "rex/_default/github-mcp/SKILL.md",
+      "capabilities": [
+        "github",
+        "pull-requests",
+        "branches",
+        "commits"
+      ]
+    },
+    "incident-response": {
+      "name": "incident-response",
+      "description": "Incident response and remediation patterns including observability, diagnosis, and targeted fixes.",
+      "path": "rex/_default/incident-response/SKILL.md",
+      "capabilities": [
+        "incident-management",
+        "observability",
+        "diagnosis",
+        "remediation"
+      ]
+    },
+    "kubernetes-mcp": {
+      "name": "kubernetes-mcp",
+      "description": "Query Kubernetes resources for diagnostics, verification, and infrastructure validation.",
+      "path": "rex/_default/kubernetes-mcp/SKILL.md",
+      "capabilities": [
+        "kubernetes",
+        "cluster-ops",
+        "diagnostics",
+        "infrastructure"
+      ]
+    },
+    "llm-docs": {
+      "name": "llm-docs",
+      "description": "Fetch LLM-optimized documentation from llms.txt endpoints for up-to-date API references",
+      "path": "rex/_default/llm-docs/SKILL.md",
+      "capabilities": [
+        "documentation",
+        "llms-txt",
+        "api-reference",
+        "framework-docs"
+      ]
+    },
+    "mcp-development": {
+      "name": "mcp-development",
+      "description": "Guide for creating MCP (Model Context Protocol) servers that enable LLMs to interact with external services. Use when building MCP servers, integrating external APIs, implementing tool servers, or creating agent capabilities. Covers TypeScript/Python patterns, tool design, and evaluation creation.",
+      "path": "rex/_default/mcp-development/SKILL.md",
+      "capabilities": [
+        "mcp",
+        "server-development",
+        "tool-design",
+        "api-integration"
+      ]
+    },
+    "observability": {
+      "name": "observability",
+      "description": "Query Prometheus metrics, Loki logs, and Grafana dashboards for diagnostics and incident response.",
+      "path": "rex/_default/observability/SKILL.md",
+      "capabilities": [
+        "metrics",
+        "logging",
+        "prometheus",
+        "grafana",
+        "monitoring"
+      ]
+    },
+    "octocode": {
+      "name": "octocode",
+      "description": "Semantic code research across GitHub repositories for finding implementations, patterns, and conducting PR/security reviews.",
+      "path": "rex/_default/octocode/SKILL.md",
+      "capabilities": [
+        "code-search",
+        "semantic-search",
+        "pr-review",
+        "security-audit"
+      ]
+    },
+    "openmemory": {
+      "name": "openmemory",
+      "description": "Persistent long-term agent memory for storing and querying past work, patterns, and learnings.",
+      "path": "rex/_default/openmemory/SKILL.md",
+      "capabilities": [
+        "memory",
+        "persistence",
+        "cross-session",
+        "knowledge-recall"
+      ]
+    },
+    "receiving-code-review": {
+      "name": "receiving-code-review",
+      "description": "Code review requires technical evaluation, not emotional performance.",
+      "path": "rex/_default/receiving-code-review/SKILL.md",
+      "capabilities": [
+        "code-review",
+        "feedback",
+        "technical-evaluation"
+      ]
+    },
+    "requesting-code-review": {
+      "name": "requesting-code-review",
+      "description": "Dispatch code-reviewer subagent to catch issues before they cascade.",
+      "path": "rex/_default/requesting-code-review/SKILL.md",
+      "capabilities": [
+        "code-review",
+        "quality-assurance",
+        "review-dispatch"
+      ]
+    },
+    "rust-error-handling": {
+      "name": "rust-error-handling",
+      "description": "Best practices for error handling in Rust applications.",
+      "path": "rex/_default/rust-error-handling/SKILL.md",
+      "capabilities": [
+        "rust",
+        "error-handling",
+        "result-types",
+        "best-practices"
+      ]
+    },
+    "rust-patterns": {
+      "name": "rust-patterns",
+      "description": "Rust backend patterns including Axum, Tokio, error handling with anyhow/thiserror, and tracing.",
+      "path": "rex/_default/rust-patterns/SKILL.md",
+      "capabilities": [
+        "rust",
+        "axum",
+        "tokio",
+        "backend-patterns",
+        "best-practices"
+      ]
+    },
+    "subagent-driven-development": {
+      "name": "subagent-driven-development",
+      "description": "Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.",
+      "path": "rex/_default/subagent-driven-development/SKILL.md",
+      "capabilities": [
+        "subagents",
+        "task-dispatch",
+        "review",
+        "development-workflow"
+      ]
+    },
+    "systematic-debugging": {
+      "name": "systematic-debugging",
+      "description": "Four-phase debugging process - root cause investigation, pattern analysis, hypothesis testing, implementation.",
+      "path": "rex/_default/systematic-debugging/SKILL.md",
+      "capabilities": [
+        "debugging",
+        "root-cause-analysis",
+        "hypothesis-testing"
+      ]
+    },
+    "tool-design": {
+      "name": "tool-design",
+      "description": "Design effective tools for AI agents - tool descriptions, consolidation principles, architectural reduction, MCP naming conventions, and error handling",
+      "path": "rex/_default/tool-design/SKILL.md",
+      "capabilities": [
+        "tool-design",
+        "mcp",
+        "api-design",
+        "agent-tools"
+      ]
+    },
+    "verification-before-completion": {
+      "name": "verification-before-completion",
+      "description": "Evidence before claims, always. No completion claims without fresh verification evidence.",
+      "path": "rex/_default/verification-before-completion/SKILL.md",
+      "capabilities": [
+        "verification",
+        "testing",
+        "evidence",
+        "quality-assurance"
+      ]
+    }
+  }
+}
