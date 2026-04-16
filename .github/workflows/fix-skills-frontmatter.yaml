@@ -1,0 +1,223 @@
+name: Validate and Fix Skill Frontmatter
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/SKILL.md'
+      - 'scripts/validate-skill-frontmatter.sh'
+      - '.github/workflows/fix-skills-frontmatter.yaml'
+  pull_request:
+    paths:
+      - '**/SKILL.md'
+  workflow_dispatch:
+    inputs:
+      auto_fix:
+        description: 'Run Copilot CLI to auto-fix broken frontmatter'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: fix-skills-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Skill Frontmatter
+    runs-on: ubuntu-latest
+    outputs:
+      broken_count: ${{ steps.scan.outputs.broken_count }}
+      broken_files: ${{ steps.scan.outputs.broken_files }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan SKILL.md files
+        id: scan
+        run: |
+          set +e
+          ./scripts/validate-skill-frontmatter.sh --quiet > /tmp/broken.txt
+          rc=$?
+          count=$(wc -l < /tmp/broken.txt | tr -d ' ')
+          echo "broken_count=$count" >> "$GITHUB_OUTPUT"
+          # Space-separated list for downstream loops
+          files=$(tr '\n' ' ' < /tmp/broken.txt | sed 's/ $//')
+          echo "broken_files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$files" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          echo "Found $count file(s) with invalid frontmatter"
+          if [ "$count" -gt 0 ]; then
+            echo "::warning title=Skill frontmatter issues::Found $count SKILL.md file(s) with invalid frontmatter"
+            sed 's|^|  - |' /tmp/broken.txt
+          fi
+          exit 0
+
+      - name: Write job summary
+        run: |
+          {
+            echo "## Skill Frontmatter Validation"
+            echo ""
+            if [ "${{ steps.scan.outputs.broken_count }}" = "0" ]; then
+              echo "✅ All \`SKILL.md\` files have valid frontmatter."
+            else
+              echo "❌ Found **${{ steps.scan.outputs.broken_count }}** file(s) with invalid frontmatter:"
+              echo ""
+              echo '```'
+              ./scripts/validate-skill-frontmatter.sh || true
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  fix:
+    name: Auto-fix with Copilot CLI (Opus 4.7)
+    needs: validate
+    if: >-
+      needs.validate.outputs.broken_count != '0' &&
+      (github.event_name == 'push' ||
+       github.event_name == 'pull_request' ||
+       (github.event_name == 'workflow_dispatch' && inputs.auto_fix))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use PAT when available so the pushed commit can retrigger workflows
+          # (release-agents.yaml, Context7 sync). Falls back to GITHUB_TOKEN.
+          token: ${{ secrets.AUTOFIX_PUSH_TOKEN || secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install GitHub Copilot CLI
+        run: |
+          npm install -g @github/copilot
+          copilot --version
+
+      - name: Fix broken skills with Copilot (Claude Opus 4.7)
+        env:
+          # COPILOT_CLI_TOKEN must be a PAT from an account with an active
+          # Copilot subscription that has CLI access. Stored as a repo secret.
+          GH_TOKEN: ${{ secrets.COPILOT_CLI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.COPILOT_CLI_TOKEN }}
+          BROKEN_FILES: ${{ needs.validate.outputs.broken_files }}
+        run: |
+          set -e
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::COPILOT_CLI_TOKEN secret not set; cannot run Copilot CLI."
+            echo "Add a PAT with Copilot access as COPILOT_CLI_TOKEN secret."
+            exit 1
+          fi
+
+          mkdir -p .copilot-logs
+
+          for f in $BROKEN_FILES; do
+            echo "::group::Fixing $f"
+            # Derive directory-name hint for `name:` field
+            dir_name="$(basename "$(dirname "$f")")"
+
+            prompt=$(cat <<EOF
+Fix the YAML frontmatter of the Agent Skill file at: $f
+
+The Agent Skills specification requires every SKILL.md to begin with YAML
+frontmatter between \`---\` markers. Required fields:
+
+  name:        lowercase-hyphenated identifier (should be "$dir_name")
+  description: one concise sentence describing WHAT the skill does AND WHEN
+               to use it (this is what agents read to decide relevance — it
+               must be specific and useful, not generic)
+
+Optional fields you may preserve if already present, or add if clearly
+appropriate from the content:
+  agents:   [list of agent names this skill applies to]
+  triggers: [list of keywords/phrases that should activate this skill]
+  model:    only if the existing file already specifies one
+
+Rules:
+1. Use the Read tool to inspect $f first.
+2. If frontmatter is missing entirely, PREPEND valid YAML frontmatter
+   followed by a blank line before the existing content.
+3. If frontmatter exists but is missing required fields, ADD only the
+   missing fields (do not reorder or remove existing fields).
+4. Infer the description from the file's first heading and opening
+   paragraph or "## WHAT" / "## Overview" section. Keep it under 200
+   characters. It MUST mention both what the skill does and when to use it.
+5. Preserve ALL existing content below the frontmatter exactly as-is.
+6. Use the Edit tool to apply the change. Do not output a summary.
+7. Do not add any fields beyond those listed above.
+
+Make the change now.
+EOF
+)
+
+            copilot \
+              --model claude-opus-4.7 \
+              --allow-all-tools \
+              --no-confirm \
+              -p "$prompt" 2>&1 | tee ".copilot-logs/$(echo "$f" | tr '/' '_').log"
+
+            # Verify this specific file is now valid
+            if head -1 "$f" | grep -q '^---[[:space:]]*$' && \
+               awk '/^---[[:space:]]*$/{c++; if(c==2) exit} c>=1' "$f" | \
+                 grep -qE '^(name|description):[[:space:]]+'; then
+              echo "  ✅ Fixed"
+            else
+              echo "::warning file=$f::Copilot run completed but file still appears invalid"
+            fi
+            echo "::endgroup::"
+          done
+
+      - name: Re-validate after fixes
+        id: revalidate
+        run: |
+          set +e
+          ./scripts/validate-skill-frontmatter.sh
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push fixes
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          count=$(git diff --staged --name-only | wc -l | tr -d ' ')
+          msg="fix(skills): auto-repair frontmatter in $count SKILL.md file(s)
+
+Fixed by GitHub Copilot CLI using Claude Opus 4.7, following the Agent
+Skills spec (required: name, description).
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+
+          git commit -m "$msg"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git push origin HEAD:"${{ github.head_ref }}"
+          else
+            git push
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Copilot logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: copilot-fix-logs
+          path: .copilot-logs/
+          retention-days: 14
+
+      - name: Fail if any file remains invalid
+        if: steps.revalidate.outputs.exit_code != '0'
+        run: |
+          echo "::error::Some files still have invalid frontmatter after auto-fix."
+          echo "Review the copilot-fix-logs artifact and fix manually."
+          exit 1
