@@ -3,14 +3,11 @@
   "public_key": "pk_8ZKHMBRBr95cqFYwANE9M",
   "projectTitle": "CTO Agent Skills & Tool Catalog",
   "description": "Complete catalog of MCP tools, agent skills, and library references for CTO platform agents. Query this to discover available capabilities, tools, and documentation.",
-  "folders": [
-    "tools-catalog",
-    "rex/_default",
-    "_shared"
-  ],
   "excludeFolders": [
     ".github",
-    ".tasks"
+    ".tasks",
+    "scripts",
+    "node_modules"
   ],
   "excludeFiles": [
     "CHANGELOG.md",
@@ -22,7 +19,8 @@
     "Use skill-mappings.yaml for agent-to-skill assignments by job type",
     "Use llm-docs-registry.yaml for library documentation sources and Context7 IDs",
     "tools-catalog/catalog.json provides a machine-readable index of all tools and their capabilities",
-    "When searching for a capability, check both tools-catalog/tools/ and rex/_default/ skills",
+    "Agent directories (rex, blaze, block, cipher, grizz, nova, tap, tess, vex, bolt, morgan, spark, cleo, angie, atlas, stitch) each have project subdirectories with SKILL.md files",
+    "_shared/_default contains skills available to all agents by default",
     "Prefer generating custom skills from Context7 library docs over installing third-party skills"
   ]
 }
