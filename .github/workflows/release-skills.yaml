@@ -152,10 +152,18 @@ jobs:
   # Runs in parallel with the release job — independent consumers.
   context7-sync:
     runs-on: ubuntu-latest
-    # Only run if CONTEXT7_API_KEY is configured
-    if: ${{ vars.CONTEXT7_API_KEY != '' || secrets.CONTEXT7_API_KEY != '' }}
+    # Secret not empty → run. Can't reference `secrets.*` in job `if:`,
+    # so gate by setting an env var and checking that instead.
+    env:
+      HAS_KEY: ${{ secrets.CONTEXT7_API_KEY != '' }}
+    if: ${{ github.event_name == 'push' }}
     steps:
+      - name: Skip if no API key
+        if: env.HAS_KEY != 'true'
+        run: |
+          echo "CONTEXT7_API_KEY not configured, skipping refresh."
       - name: Refresh Context7 index
+        if: env.HAS_KEY == 'true'
         env:
           CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
         run: |
