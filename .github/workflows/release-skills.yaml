@@ -147,3 +147,34 @@ jobs:
           The CTO controller fetches \`hashes.txt\`, downloads the matching tarball, and caches it locally." \
             --latest \
             dist/*
+
+  # Refresh Context7 index so agents can query up-to-date tool/skill docs.
+  # Runs in parallel with the release job — independent consumers.
+  context7-sync:
+    runs-on: ubuntu-latest
+    # Only run if CONTEXT7_API_KEY is configured
+    if: ${{ vars.CONTEXT7_API_KEY != '' || secrets.CONTEXT7_API_KEY != '' }}
+    steps:
+      - name: Refresh Context7 index
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          echo "Triggering Context7 re-index for 5dlabs/cto-agents..."
+          HTTP_STATUS=$(curl -s -o /tmp/ctx7-response.json -w "%{http_code}" \
+            -X POST "https://context7.com/api/v1/refresh" \
+            -H "Authorization: Bearer ${CONTEXT7_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d '{"libraryName": "/5dlabs/cto-agents"}')
+
+          echo "Response (HTTP ${HTTP_STATUS}):"
+          cat /tmp/ctx7-response.json
+          echo ""
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "✅ Context7 refresh triggered successfully"
+          elif [ "$HTTP_STATUS" -eq 429 ]; then
+            echo "⚠️  Rate limited — Context7 will auto-index on next cycle"
+          else
+            echo "❌ Context7 refresh failed (HTTP ${HTTP_STATUS})"
+            exit 1
+          fi
