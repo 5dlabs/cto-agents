@@ -39,19 +39,23 @@ jobs:
         id: scan
         run: |
           set +e
+          # Only list errors (not warnings) for the auto-fix loop; warnings
+          # are advisory and shouldn't trigger Copilot runs.
           ./scripts/validate-skill-frontmatter.sh --quiet > /tmp/broken.txt
           rc=$?
+          # Filter blank lines defensively
+          sed -i '/^$/d' /tmp/broken.txt || true
           count=$(wc -l < /tmp/broken.txt | tr -d ' ')
           echo "broken_count=$count" >> "$GITHUB_OUTPUT"
-          # Space-separated list for downstream loops
           files=$(tr '\n' ' ' < /tmp/broken.txt | sed 's/ $//')
           echo "broken_files<<EOF" >> "$GITHUB_OUTPUT"
           echo "$files" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
-          echo "Found $count file(s) with invalid frontmatter"
+          echo "Found $count file(s) with errors (validator exit: $rc)"
           if [ "$count" -gt 0 ]; then
-            echo "::warning title=Skill frontmatter issues::Found $count SKILL.md file(s) with invalid frontmatter"
-            sed 's|^|  - |' /tmp/broken.txt
+            echo "::warning title=Skill frontmatter errors::$count SKILL.md file(s) need fixes"
+            # Print the full human-readable report to the job log
+            ./scripts/validate-skill-frontmatter.sh || true
           fi
           exit 0
 
@@ -117,40 +121,58 @@ jobs:
 
           for f in $BROKEN_FILES; do
             echo "::group::Fixing $f"
-            # Derive directory-name hint for `name:` field
             dir_name="$(basename "$(dirname "$f")")"
+
+            # Per-file diagnostic from our validator so Copilot knows exactly
+            # which error(s) to fix (not just "something is wrong").
+            diag="$(./scripts/validate-skill-frontmatter.sh 2>&1 | \
+                    awk -v f="$f" '
+                      /^  \[/       { reason=$0 }
+                      $0 ~ f        { in_entry=1; print reason; print "    "$0; next }
+                      in_entry && /^    → / { print; in_entry=0 }
+                    ')"
 
             prompt=$(cat <<EOF
 Fix the YAML frontmatter of the Agent Skill file at: $f
 
-The Agent Skills specification requires every SKILL.md to begin with YAML
-frontmatter between \`---\` markers. Required fields:
+Current validator findings for this file:
+$diag
 
-  name:        lowercase-hyphenated identifier (should be "$dir_name")
-  description: one concise sentence describing WHAT the skill does AND WHEN
-               to use it (this is what agents read to decide relevance — it
-               must be specific and useful, not generic)
+The Agent Skills spec (https://agentskills.io/specification) REQUIRES:
 
-Optional fields you may preserve if already present, or add if clearly
-appropriate from the content:
-  agents:   [list of agent names this skill applies to]
-  triggers: [list of keywords/phrases that should activate this skill]
-  model:    only if the existing file already specifies one
+  name:        string matching regex ^[a-z0-9]+(-[a-z0-9]+)*$ (lowercase
+               alphanumeric + hyphens, no leading/trailing/consecutive
+               hyphens), 1-64 chars. MUST EXACTLY EQUAL the parent
+               directory name, which is: "$dir_name"
+               (VS Code / GitHub Copilot Chat silently drops skills whose
+               name does not match the directory, so this is non-negotiable)
+
+  description: string, 1-1024 chars, ideally 50-300 chars. Must describe
+               BOTH what the skill does AND when an agent should use it.
+               Write in third person, imperative mood, no XML tags, no
+               "I"/"you" voice. This is what agents read to decide
+               relevance — it must be specific and useful, not generic.
+
+Optional fields you may preserve if already present (but do NOT add them
+unless the content clearly warrants it):
+  license, metadata, compatibility, agents, triggers, llm_docs_url
+
+DO NOT add these Claude-Code-only fields (non-portable):
+  allowed-tools, model
 
 Rules:
 1. Use the Read tool to inspect $f first.
-2. If frontmatter is missing entirely, PREPEND valid YAML frontmatter
-   followed by a blank line before the existing content.
-3. If frontmatter exists but is missing required fields, ADD only the
-   missing fields (do not reorder or remove existing fields).
-4. Infer the description from the file's first heading and opening
-   paragraph or "## WHAT" / "## Overview" section. Keep it under 200
-   characters. It MUST mention both what the skill does and when to use it.
-5. Preserve ALL existing content below the frontmatter exactly as-is.
-6. Use the Edit tool to apply the change. Do not output a summary.
-7. Do not add any fields beyond those listed above.
-
-Make the change now.
+2. If frontmatter is missing entirely, PREPEND a valid \`---\` YAML block
+   followed by a blank line, then the existing content unchanged.
+3. If frontmatter exists, ADD or CORRECT only the fields the validator
+   flagged. Do not reorder or remove fields that are already present.
+4. If the current \`name\` field doesn't match "$dir_name", change it to
+   "$dir_name" exactly (the directory name is authoritative).
+5. Infer the description from the file's first heading, opening paragraph,
+   or "## Overview" / "## WHAT" section. Target 80-200 chars.
+6. Preserve ALL body content below the frontmatter byte-for-byte.
+7. Use the Edit tool (or Write if creating the header is easier) to apply
+   the change. Do not output a summary — just fix the file.
 EOF
 )
 
@@ -160,13 +182,12 @@ EOF
               --no-confirm \
               -p "$prompt" 2>&1 | tee ".copilot-logs/$(echo "$f" | tr '/' '_').log"
 
-            # Verify this specific file is now valid
-            if head -1 "$f" | grep -q '^---[[:space:]]*$' && \
-               awk '/^---[[:space:]]*$/{c++; if(c==2) exit} c>=1' "$f" | \
-                 grep -qE '^(name|description):[[:space:]]+'; then
-              echo "  ✅ Fixed"
+            # Per-file quick verification (full re-validation happens later)
+            if ./scripts/validate-skill-frontmatter.sh --quiet 2>/dev/null | \
+                 grep -qxF "$f"; then
+              echo "::warning file=$f::Copilot run completed but file is still invalid"
             else
-              echo "::warning file=$f::Copilot run completed but file still appears invalid"
+              echo "  ✅ Fixed"
             fi
             echo "::endgroup::"
           done
@@ -214,6 +235,41 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
           name: copilot-fix-logs
           path: .copilot-logs/
           retention-days: 14
+
+      - name: Refresh Context7 index
+        if: >-
+          steps.commit.outputs.changed == 'true' &&
+          github.event_name != 'pull_request'
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          if [ -z "$CONTEXT7_API_KEY" ]; then
+            echo "::notice::CONTEXT7_API_KEY not set — skipping Context7 refresh."
+            exit 0
+          fi
+          echo "Requesting Context7 re-index of /5dlabs/cto-agents ..."
+          # Retry up to 3× in case another refresh is already in progress.
+          for i in 1 2 3; do
+            resp=$(curl -s -o /tmp/refresh.json -w '%{http_code}' \
+              -X POST "https://context7.com/api/v1/refresh" \
+              -H "Authorization: Bearer $CONTEXT7_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{"libraryName":"/5dlabs/cto-agents"}')
+            cat /tmp/refresh.json; echo
+            if [ "$resp" = "200" ]; then
+              echo "✅ Context7 refresh triggered."
+              exit 0
+            fi
+            if grep -q user-has-active-task /tmp/refresh.json; then
+              echo "Another task is in progress; waiting 60s before retry $i/3 ..."
+              sleep 60
+              continue
+            fi
+            echo "::warning::Context7 refresh returned HTTP $resp"
+            break
+          done
+          # Non-fatal: don't fail the whole workflow because of re-index issues
+          exit 0
 
       - name: Fail if any file remains invalid
         if: steps.revalidate.outputs.exit_code != '0'
