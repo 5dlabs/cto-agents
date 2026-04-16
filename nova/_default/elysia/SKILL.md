@@ -1,5 +1,5 @@
 ---
-name: elysia-llm-docs
+name: elysia
 description: ElysiaJS framework for building type-safe, high-performance backend servers with Bun
 agents: [nova]
 triggers: [elysia, bun server, typescript backend, eden, end-to-end type safety]

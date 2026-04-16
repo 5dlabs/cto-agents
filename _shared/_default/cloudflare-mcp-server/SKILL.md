@@ -1,3 +1,8 @@
+---
+name: cloudflare-mcp-server
+description: Creates production-ready Model Context Protocol servers on Cloudflare Workers with tools, authentication, and deployment.
+---
+
 # Building MCP Servers on Cloudflare
 
 Creates production-ready Model Context Protocol servers on Cloudflare Workers with tools, authentication, and deployment.

@@ -1,3 +1,8 @@
+---
+name: cloudflare-wrangler
+description: Deploy, develop, and manage Cloudflare Workers and associated resources.
+---
+
 # Wrangler CLI
 
 Deploy, develop, and manage Cloudflare Workers and associated resources.

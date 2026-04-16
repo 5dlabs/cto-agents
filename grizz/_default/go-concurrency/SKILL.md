@@ -1,3 +1,8 @@
+---
+name: go-concurrency
+description: Common concurrency patterns and best practices in Go.
+---
+
 # Go Concurrency Patterns
 
 Common concurrency patterns and best practices in Go.

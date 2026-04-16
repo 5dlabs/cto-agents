@@ -1,5 +1,6 @@
 ---
 name: architecture-patterns
+description: "Backend architecture patterns for building maintainable, testable systems: Clean Architecture, Hexagonal Architecture, and Domain-Driven Design."
 model: reasoning
 ---
 

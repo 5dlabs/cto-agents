@@ -1,5 +1,5 @@
 ---
-name: error-handling
+name: api-error-handling
 model: standard
 description: Error handling patterns across languages and layers — operational vs programmer errors, retry strategies, circuit breakers, error boundaries, HTTP responses, graceful degradation, and structured logging. Use when designing error strategies, building resilient APIs, or reviewing error management.
 ---

@@ -1,3 +1,8 @@
+---
+name: cloudflare-agents-sdk
+description: Build persistent, stateful AI agents on Cloudflare Workers using the `agents` npm package.
+---
+
 # Cloudflare Agents SDK
 
 Build persistent, stateful AI agents on Cloudflare Workers using the `agents` npm package.

@@ -1,3 +1,8 @@
+---
+name: rust-error-handling
+description: Best practices for error handling in Rust applications.
+---
+
 # Rust Error Handling
 
 Best practices for error handling in Rust applications.

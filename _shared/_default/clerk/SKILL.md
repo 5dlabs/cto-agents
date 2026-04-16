@@ -1,5 +1,5 @@
 ---
-name: clerk-llm-docs
+name: clerk
 description: Fetch LLM-optimized documentation for Clerk, the complete user management platform.
 agents: [blaze, nova, tap, spark]
 triggers: [clerk, clerk docs, user management, authentication, identity]

@@ -1,3 +1,8 @@
+---
+name: audit-prep-assistant
+description: "**Review Goals Document**:"
+---
+
 # Audit Prep Assistant
 
 ## Purpose

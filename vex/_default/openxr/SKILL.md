@@ -1,3 +1,8 @@
+---
+name: openxr
+description: OpenXR is the Khronos Group's open standard for XR devices, providing a unified API across VR/AR headsets. Unity's OpenXR package implements this standard.
+---
+
 # OpenXR Cross-Platform Development
 
 ## Overview

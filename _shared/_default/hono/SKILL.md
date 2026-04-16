@@ -1,5 +1,5 @@
 ---
-name: hono-llm-docs
+name: hono
 description: Fetch Hono web framework documentation via llms.txt for up-to-date API references
 agents: [nova, grizz]
 triggers: [hono, cloudflare workers, edge runtime, web standards, ultrafast]

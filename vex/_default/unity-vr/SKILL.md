@@ -1,3 +1,8 @@
+---
+name: unity-vr
+description: Unity VR development using XR Interaction Toolkit (XRI) and OpenXR for cross-platform headset support.
+---
+
 # Unity VR Development Patterns
 
 ## Overview

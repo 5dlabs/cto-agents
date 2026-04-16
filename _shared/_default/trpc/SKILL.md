@@ -1,5 +1,5 @@
 ---
-name: trpc-llm-docs
+name: trpc
 description: Fetch LLM-optimized documentation for tRPC, the end-to-end typesafe API framework.
 agents: [blaze, nova]
 triggers: [trpc, trpc docs, typesafe api, api framework, rpc]

@@ -1,3 +1,8 @@
+---
+name: expo-tailwind
+description: This guide covers setting up Tailwind CSS v4 in Expo using react-native-css and NativeWind v5 for universal styling across iOS, Android, and Web.
+---
+
 # Tailwind CSS Setup for Expo
 
 This guide covers setting up Tailwind CSS v4 in Expo using react-native-css and NativeWind v5 for universal styling across iOS, Android, and Web.

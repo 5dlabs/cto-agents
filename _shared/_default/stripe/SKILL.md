@@ -1,5 +1,5 @@
 ---
-name: stripe-llm-docs
+name: stripe
 description: Fetch LLM-optimized documentation for Stripe, the payments infrastructure platform.
 agents: [blaze, nova, rex, grizz]
 triggers: [stripe, stripe docs, payments, billing, subscriptions, checkout]

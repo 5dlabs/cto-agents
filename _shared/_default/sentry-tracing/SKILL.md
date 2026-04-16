@@ -1,3 +1,8 @@
+---
+name: sentry-tracing
+description: Configure Sentry's performance monitoring to track transactions and spans.
+---
+
 # Setup Sentry Tracing
 
 Configure Sentry's performance monitoring to track transactions and spans.

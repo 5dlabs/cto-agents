@@ -1,3 +1,8 @@
+---
+name: playwright-testing
+description: End-to-end browser testing with Playwright for web applications.
+---
+
 # Playwright Testing
 
 End-to-end browser testing with Playwright for web applications.

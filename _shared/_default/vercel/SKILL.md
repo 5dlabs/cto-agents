@@ -1,5 +1,5 @@
 ---
-name: vercel-llm-docs
+name: vercel
 description: Fetch LLM-optimized documentation for Vercel, the frontend cloud platform.
 agents: [blaze, nova, bolt]
 triggers: [vercel, vercel docs, deployment, hosting, edge functions, serverless]

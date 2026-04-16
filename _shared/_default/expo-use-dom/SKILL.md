@@ -1,3 +1,8 @@
+---
+name: expo-use-dom
+description: DOM components allow web code to run verbatim in a webview on native platforms while rendering as-is on web. This enables using web-only libraries like `recharts`, `react-syntax-highlighter`, or any React web library in your Expo app without modification.
+---
+
 # Expo DOM Components
 
 ## What are DOM Components?

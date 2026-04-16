@@ -1,3 +1,8 @@
+---
+name: entry-point-analyzer
+description: Systematically identify all **state-changing** entry points in a smart contract codebase to guide security audits.
+---
+
 # Entry Point Analyzer
 
 Systematically identify all **state-changing** entry points in a smart contract codebase to guide security audits.

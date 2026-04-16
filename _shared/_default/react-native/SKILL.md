@@ -1,5 +1,5 @@
 ---
-name: react-native-llm-docs
+name: react-native
 description: Fetch React Native documentation via llms.txt for up-to-date framework references
 agents: [tap, blaze, spark]
 triggers: [react native, new architecture, fabric, turbo modules, native components]

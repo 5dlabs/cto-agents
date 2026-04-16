@@ -1,3 +1,8 @@
+---
+name: expo-cicd-workflows
+description: Help developers write and edit EAS CI/CD workflow YAML files.
+---
+
 # EAS Workflows Skill
 
 Help developers write and edit EAS CI/CD workflow YAML files.

@@ -1,5 +1,5 @@
 ---
-name: bun-llm-docs
+name: bun
 description: Fetch Bun runtime documentation via llms.txt for up-to-date API references
 agents: [nova, blaze]
 triggers: [bun, bun runtime, bun install, bunx, bun test, bun build]

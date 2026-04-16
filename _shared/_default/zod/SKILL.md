@@ -1,5 +1,5 @@
 ---
-name: zod-llm-docs
+name: zod
 description: Fetch Zod schema validation documentation via llms.txt for up-to-date API references
 agents: [nova, blaze, rex]
 triggers: [zod, schema validation, type inference, z.object, z.string, z.number]

@@ -1,3 +1,8 @@
+---
+name: requesting-code-review
+description: Dispatch code-reviewer subagent to catch issues before they cascade.
+---
+
 # Requesting Code Review
 
 Dispatch code-reviewer subagent to catch issues before they cascade.

@@ -1,3 +1,8 @@
+---
+name: expo-building-ui
+description: "Consult these resources as needed:"
+---
+
 # Expo UI Guidelines
 
 ## References

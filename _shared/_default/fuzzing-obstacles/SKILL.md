@@ -1,3 +1,8 @@
+---
+name: fuzzing-obstacles
+description: "Many real-world programs were not designed with fuzzing in mind. They may:"
+---
+
 # Overcoming Fuzzing Obstacles
 
 Codebases often contain anti-fuzzing patterns that prevent effective coverage. Checksums, global state (like time-seeded PRNGs), and validation checks can block the fuzzer from exploring deeper code paths.

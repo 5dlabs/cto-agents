@@ -1,5 +1,5 @@
 ---
-name: supabase-llm-docs
+name: supabase
 description: Fetch LLM-optimized documentation for Supabase, the open-source Firebase alternative.
 agents: [blaze, nova, tap, spark]
 triggers: [supabase, supabase docs, backend as a service, baas, postgres, realtime]

@@ -1,5 +1,5 @@
 ---
-name: prisma-llm-docs
+name: prisma
 description: Fetch LLM-optimized documentation for Prisma, the next-generation TypeScript ORM.
 agents: [nova, rex, grizz]
 triggers: [prisma, prisma docs, orm, database, typescript orm]

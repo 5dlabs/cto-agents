@@ -1,3 +1,8 @@
+---
+name: variant-analysis
+description: Find similar vulnerabilities and bugs across a codebase after identifying an initial pattern.
+---
+
 # Variant Analysis
 
 Find similar vulnerabilities and bugs across a codebase after identifying an initial pattern.

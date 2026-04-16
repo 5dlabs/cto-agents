@@ -1,3 +1,8 @@
+---
+name: drizzle-queries
+description: Query patterns and best practices for Drizzle ORM with PostgreSQL.
+---
+
 # Drizzle ORM Queries
 
 Query patterns and best practices for Drizzle ORM with PostgreSQL.

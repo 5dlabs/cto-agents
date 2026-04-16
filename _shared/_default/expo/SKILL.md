@@ -1,5 +1,5 @@
 ---
-name: expo-llm-docs
+name: expo
 description: Fetch Expo documentation via llms.txt for up-to-date React Native development references
 agents: [tap, blaze]
 triggers: [expo, expo router, eas build, eas update, expo sdk, development build]

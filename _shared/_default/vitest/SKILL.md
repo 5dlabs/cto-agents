@@ -1,5 +1,5 @@
 ---
-name: vitest-llm-docs
+name: vitest
 description: Fetch LLM-optimized documentation for Vitest, the Vite-native testing framework.
 agents: [blaze, nova, tess]
 triggers: [vitest, vitest docs, testing, unit tests, test framework, vite testing]

@@ -1,5 +1,5 @@
 ---
-name: turborepo-llm-docs
+name: turborepo
 description: Fetch LLM-optimized documentation for Turborepo, the high-performance monorepo build system.
 agents: [blaze, nova, bolt]
 triggers: [turborepo, turbo, monorepo, build system, workspace]

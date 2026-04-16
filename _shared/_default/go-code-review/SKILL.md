@@ -1,3 +1,8 @@
+---
+name: go-code-review
+description: Best practices and common issues to check when reviewing Go code.
+---
+
 # Go Code Review
 
 Best practices and common issues to check when reviewing Go code.

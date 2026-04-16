@@ -1,3 +1,8 @@
+---
+name: expo-data-fetching
+description: "**You MUST use this skill for ANY networking work including API requests, data fetching, caching, or network debugging.**"
+---
+
 # Expo Networking
 
 **You MUST use this skill for ANY networking work including API requests, data fetching, caching, or network debugging.**
