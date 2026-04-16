@@ -182,6 +182,8 @@ jobs:
             echo "✅ Context7 refresh triggered successfully"
           elif [ "$HTTP_STATUS" -eq 429 ]; then
             echo "⚠️  Rate limited — Context7 will auto-index on next cycle"
+          elif grep -q 'too-early\|user-has-active-task' /tmp/ctx7-response.json 2>/dev/null; then
+            echo "ℹ️  Context7 refresh skipped (cooldown or task in progress) — non-fatal."
           else
             echo "❌ Context7 refresh failed (HTTP ${HTTP_STATUS})"
             exit 1
